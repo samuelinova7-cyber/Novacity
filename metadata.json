@@ -1,0 +1,6 @@
+{
+  "name": "Nova City MCZ - Assistência Técnica & Acessórios",
+  "description": "Assistência técnica especializada em smartphones e vitrine de eletrônicos e acessórios em Maceió. Conserto rápido, garantia e atendimento via WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

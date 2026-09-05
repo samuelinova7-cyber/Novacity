@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Keyframe animations for Google Review glowing button and Reels */
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 15px rgba(0, 230, 118, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0);
+  }
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.btn-google-review {
+  display: inline-block;
+  background: linear-gradient(45deg, #00E676, #00C853, #00E676);
+  background-size: 200% auto;
+  color: #000;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 15px 30px;
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 0 18px rgba(0, 230, 118, 0.6);
+  animation: pulseGlow 2s infinite, gradientAnimation 3s ease infinite;
+  transition: transform 0.2s ease;
+}
+
+.btn-google-review:hover {
+  transform: scale(1.05);
+}
+
+/* Custom Horizontal Scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #00E676;
+  border-radius: 4px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
