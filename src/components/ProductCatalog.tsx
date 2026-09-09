@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   ShoppingBag,
@@ -10,11 +10,40 @@ import {
   CheckCircle2,
   Tag,
   SlidersHorizontal,
-  ChevronRight
+  ChevronRight,
+  ChevronLeft,
+  Maximize2
 } from 'lucide-react';
 import { Product } from '../types';
 import { CATEGORIES, PRODUCTS } from '../data/storeData';
 import { getProductWhatsAppUrl } from '../utils/whatsapp';
+
+const VITRINE_PHOTOS = [
+  {
+    url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.28_AM.jpg',
+    title: 'Vitrine 01 - Acessórios de Áudio & Fones Bluetooth',
+    badge: 'Vitrine 01',
+    description: 'Linha completa de fones TWS, headsets e acessórios com som cristalino e garantia.',
+  },
+  {
+    url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.29_AM.jpg',
+    title: 'Vitrine 02 - Carregadores Turbo PD, Cabos & Fontes',
+    badge: 'Vitrine 02',
+    description: 'Carregamento ultrarrápido homologado para iPhone, Samsung e aparelhos Type-C.',
+  },
+  {
+    url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.29_AM_1.jpg',
+    title: 'Vitrine 03 - Power Banks, Baterias Portáteis & Indução',
+    badge: 'Vitrine 03',
+    description: 'Baterias externas de alta capacidade e carregadores por indução magnética MagSafe.',
+  },
+  {
+    url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.29_AM_2.jpg',
+    title: 'Vitrine 04 - Balcão & Películas de Alta Proteção 9D',
+    badge: 'Vitrine 04',
+    description: 'Aplicação profissional na hora sem bolhas e cases anti-impacto reforçadas.',
+  },
+];
 
 interface ProductCatalogProps {
   onSelectProduct: (product: Product) => void;
@@ -31,6 +60,28 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [sortBy, setSortBy] = useState<'default' | 'price-asc' | 'price-desc'>('default');
+  
+  // Alternating vitrine photos in a single block
+  const [vitrineIndex, setVitrineIndex] = useState(0);
+  const [isVitrinePaused, setIsVitrinePaused] = useState(false);
+
+  useEffect(() => {
+    if (isVitrinePaused) return;
+    const interval = setInterval(() => {
+      setVitrineIndex((prev) => (prev + 1) % VITRINE_PHOTOS.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [isVitrinePaused]);
+
+  const currentVitrine = VITRINE_PHOTOS[vitrineIndex];
+
+  const handlePrevVitrine = () => {
+    setVitrineIndex((prev) => (prev - 1 + VITRINE_PHOTOS.length) % VITRINE_PHOTOS.length);
+  };
+
+  const handleNextVitrine = () => {
+    setVitrineIndex((prev) => (prev + 1) % VITRINE_PHOTOS.length);
+  };
 
   const filteredProducts = PRODUCTS.filter((product) => {
     const matchesCategory =
@@ -58,52 +109,119 @@ export const ProductCatalog: React.FC<ProductCatalogProps> = ({
     <section id="produtos" className="py-16 bg-[#09090b] text-white">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         
-        {/* 4 User Photos in Maximum Proportion Above Vitrine & Tabela de Acessórios */}
-        <div className="mb-10 bg-zinc-900/60 border border-zinc-800/80 rounded-2xl p-4 sm:p-6 shadow-xl">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#00E676] flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" />
-              Fotos Oficiais da Vitrine e Balcão (Proporção Máxima)
-            </span>
-            <span className="text-[11px] text-zinc-400">Clique em qualquer foto para ampliar</span>
+        {/* Single Alternating Block for Vitrine Photos (Proporção Máxima) */}
+        <div
+          onMouseEnter={() => setIsVitrinePaused(true)}
+          onMouseLeave={() => setIsVitrinePaused(false)}
+          className="mb-12 bg-gradient-to-b from-zinc-900/90 to-zinc-950 border border-zinc-800 rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden"
+        >
+          {/* Subtle Ambient Glow */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#00E676]/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Top Bar of the Block */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 relative z-10">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00E676]/10 border border-[#00E676]/30 text-[#00E676] text-xs font-bold uppercase tracking-wider mb-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Vitrine Oficial da Loja (Bloco Único com Alternância)</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                {currentVitrine.title}
+              </h3>
+            </div>
+
+            {/* Carousel Controls */}
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-xs text-zinc-400 font-mono hidden sm:inline-block">
+                {isVitrinePaused ? '⏸️ Pausado (Hover)' : '▶️ Alternando a cada 4.5s'} • {vitrineIndex + 1}/{VITRINE_PHOTOS.length}
+              </span>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handlePrevVitrine}
+                  aria-label="Foto Anterior da Vitrine"
+                  className="w-9 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center text-zinc-200 hover:text-white transition-colors cursor-pointer"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={handleNextVitrine}
+                  aria-label="Próxima Foto da Vitrine"
+                  className="w-9 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 flex items-center justify-center text-zinc-200 hover:text-white transition-colors cursor-pointer"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-            {[
-              {
-                url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.28_AM.jpg',
-                title: 'Vitrine 01 - Acessórios e Fones'
-              },
-              {
-                url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.29_AM.jpg',
-                title: 'Vitrine 02 - Carregadores e Cabos'
-              },
-              {
-                url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.29_AM_1.jpg',
-                title: 'Vitrine 03 - Organizadores e Power Banks'
-              },
-              {
-                url: 'https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.51.29_AM_2.jpg',
-                title: 'Vitrine 04 - Balcão & Películas'
-              }
-            ].map((img, idx) => (
-              <div
-                key={idx}
-                onClick={() => onOpenLightbox && onOpenLightbox(img.url)}
-                className="relative h-48 sm:h-56 bg-black rounded-xl overflow-hidden border border-zinc-800 cursor-pointer group shadow-md flex items-center justify-center p-2"
-                title="Clique para ampliar em proporção máxima"
-              >
-                <img
-                  src={img.url}
-                  alt={img.title}
-                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-150 transition-opacity duration-300 flex items-end p-2.5">
-                  <span className="text-[10px] font-bold text-white bg-black/70 px-2 py-0.5 rounded backdrop-blur-sm">
-                    {img.title}
-                  </span>
-                </div>
+          {/* Featured Alternating Image Container in Maximum Proportion */}
+          <div
+            onClick={() => onOpenLightbox && onOpenLightbox(currentVitrine.url)}
+            className="relative w-full h-[320px] sm:h-[420px] md:h-[480px] bg-black rounded-2xl overflow-hidden border border-zinc-800/90 cursor-pointer group shadow-2xl flex items-center justify-center p-3 sm:p-5"
+            title="Clique para ampliar esta foto da vitrine em proporção máxima"
+          >
+            <img
+              src={currentVitrine.url}
+              alt={currentVitrine.title}
+              key={currentVitrine.url}
+              className="w-full h-full object-contain group-hover:scale-[1.03] transition-transform duration-700"
+            />
+
+            {/* Gradient Overlays */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30 pointer-events-none" />
+
+            {/* Top Badges */}
+            <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-white/15 text-xs font-black text-white uppercase tracking-wider flex items-center gap-2 shadow-lg">
+                <span className="w-2 h-2 rounded-full bg-[#00E676] animate-ping" />
+                {currentVitrine.badge}
+              </span>
+            </div>
+
+            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+              <div className="px-3 py-1.5 rounded-xl bg-black/80 backdrop-blur-md border border-zinc-700 text-xs font-bold text-zinc-200 flex items-center gap-1.5 shadow-lg group-hover:bg-[#00E676] group-hover:text-black transition-colors">
+                <Maximize2 className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Ampliar Foto</span>
               </div>
+            </div>
+
+            {/* Bottom Caption Info */}
+            <div className="absolute bottom-4 left-4 right-4 z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-2 bg-black/70 backdrop-blur-md p-3 sm:p-4 rounded-xl border border-white/10">
+              <div>
+                <p className="text-xs sm:text-sm font-bold text-white">
+                  {currentVitrine.title}
+                </p>
+                <p className="text-[11px] sm:text-xs text-zinc-300 mt-0.5">
+                  {currentVitrine.description}
+                </p>
+              </div>
+              <span className="text-[10px] sm:text-[11px] text-[#00E676] font-extrabold uppercase tracking-wider shrink-0 bg-[#00E676]/10 px-2.5 py-1 rounded-lg border border-[#00E676]/30 self-start sm:self-auto">
+                Proporção Máxima 100%
+              </span>
+            </div>
+          </div>
+
+          {/* Quick Select Thumbnails */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 relative z-10">
+            {VITRINE_PHOTOS.map((item, idx) => (
+              <button
+                key={idx}
+                onClick={() => setVitrineIndex(idx)}
+                className={`flex items-center gap-2.5 p-2 rounded-xl border transition-all text-left cursor-pointer ${
+                  vitrineIndex === idx
+                    ? 'bg-zinc-800 border-[#00E676] shadow-[0_0_15px_rgba(0,230,118,0.25)]'
+                    : 'bg-zinc-900/60 border-zinc-800 hover:border-zinc-700 opacity-70 hover:opacity-100'
+                }`}
+              >
+                <div className="w-12 h-12 bg-black rounded-lg overflow-hidden shrink-0 border border-zinc-800 flex items-center justify-center p-1">
+                  <img src={item.url} alt={item.title} className="w-full h-full object-contain" />
+                </div>
+                <div className="overflow-hidden">
+                  <p className="text-[11px] font-bold text-white truncate">{item.badge}</p>
+                  <p className="text-[10px] text-zinc-400 truncate">Clique para ver</p>
+                </div>
+              </button>
             ))}
           </div>
         </div>
