@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TopBar } from './components/TopBar';
+import { TopTickerBanner } from './components/TopTickerBanner';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { ServicesSection } from './components/ServicesSection';
@@ -13,7 +14,9 @@ import { TechChallengeQuiz } from './components/TechChallengeQuiz';
 import { CartDrawer } from './components/CartDrawer';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 import { Footer } from './components/Footer';
+import { ImageLightbox } from './components/ImageLightbox';
 import { Product, CartItem } from './types';
+import { playClickSound } from './utils/sound';
 
 export default function App() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -21,6 +24,19 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('inicio');
   const [quoteIssue, setQuoteIssue] = useState<string | undefined>(undefined);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  // Global sound effect on clicks
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('button') || target.closest('a') || target.closest('[role="button"]')) {
+        playClickSound();
+      }
+    };
+    window.addEventListener('click', handleGlobalClick);
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, []);
 
   // Scroll navigation handler
   const handleNavigate = (sectionId: string) => {
@@ -106,13 +122,16 @@ export default function App() {
       {/* Top Physical & Live Status Announcement Bar */}
       <TopBar />
 
-      {/* Main Sticky Navbar */}
-      <Navbar
-        cartCount={totalCartCount}
-        onOpenCart={() => setIsCartOpen(true)}
-        activeSection={activeSection}
-        onNavigate={handleNavigate}
-      />
+      {/* Sticky Header Container (Informative Yellow Running Ticker + Main Navbar) */}
+      <div className="sticky top-0 z-40 w-full shadow-2xl">
+        <TopTickerBanner onNavigateToQuiz={() => handleNavigate('desafio-tech')} />
+        <Navbar
+          cartCount={totalCartCount}
+          onOpenCart={() => setIsCartOpen(true)}
+          activeSection={activeSection}
+          onNavigate={handleNavigate}
+        />
+      </div>
 
       {/* Main Content Sections */}
       <main className="flex-1">
@@ -120,6 +139,7 @@ export default function App() {
         <HeroSection
           onNavigateToCatalog={() => handleNavigate('produtos')}
           onNavigateToQuote={() => handleNavigate('orcamento')}
+          onOpenLightbox={(url) => setLightboxImage(url)}
         />
 
         {/* Quick Services Bar */}
@@ -132,22 +152,26 @@ export default function App() {
             handleAddToCart(product);
             setIsCartOpen(true);
           }}
+          onOpenLightbox={(url) => setLightboxImage(url)}
         />
 
         {/* Interactive Repair Quote Calculator Form */}
-        <RepairQuoteForm initialIssue={quoteIssue} />
+        <RepairQuoteForm
+          initialIssue={quoteIssue}
+          onOpenLightbox={(url) => setLightboxImage(url)}
+        />
 
         {/* Gamified Tech Challenge Quiz & Free Prize */}
         <TechChallengeQuiz />
 
         {/* Local Trust & Location Map Section */}
-        <TrustAndLocation />
+        <TrustAndLocation onOpenLightbox={(url) => setLightboxImage(url)} />
 
         {/* Customer Reviews & Social Proof */}
-        <ReviewsSection />
+        <ReviewsSection onOpenLightbox={(url) => setLightboxImage(url)} />
 
         {/* Instagram Daily Life & Reels Showcase */}
-        <InstagramReelsSection />
+        <InstagramReelsSection onOpenLightbox={(url) => setLightboxImage(url)} />
       </main>
 
       {/* Footer */}
@@ -174,6 +198,12 @@ export default function App() {
 
       {/* Floating WhatsApp Quick Action Button */}
       <FloatingWhatsApp />
+
+      {/* Image Lightbox Modal */}
+      <ImageLightbox
+        imageUrl={lightboxImage}
+        onClose={() => setLightboxImage(null)}
+      />
     </div>
   );
 }

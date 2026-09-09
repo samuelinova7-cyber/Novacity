@@ -5,9 +5,10 @@ import { getRepairQuoteWhatsAppUrl } from '../utils/whatsapp';
 
 interface RepairQuoteFormProps {
   initialIssue?: string;
+  onOpenLightbox?: (url: string) => void;
 }
 
-export const RepairQuoteForm: React.FC<RepairQuoteFormProps> = ({ initialIssue }) => {
+export const RepairQuoteForm: React.FC<RepairQuoteFormProps> = ({ initialIssue, onOpenLightbox }) => {
   const [selectedBrand, setSelectedBrand] = useState('Apple (iPhone)');
   const [selectedModel, setSelectedModel] = useState('iPhone 13 / 13 Pro');
   const [customModel, setCustomModel] = useState('');
@@ -43,8 +44,25 @@ export const RepairQuoteForm: React.FC<RepairQuoteFormProps> = ({ initialIssue }
     <section id="orcamento" className="py-16 bg-[#09090b] relative">
       <div className="max-w-5xl mx-auto px-4 md:px-8">
         
-        {/* Header */}
+        {/* Header with requested photo above heading in maximum proportion */}
         <div className="text-center max-w-2xl mx-auto mb-10">
+          
+          <div
+            onClick={() => onOpenLightbox && onOpenLightbox('https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977936/WhatsApp_Image_2026-09-09_at_9.58.49_AM.jpg')}
+            className="relative w-full h-48 sm:h-64 bg-black rounded-2xl overflow-hidden mb-6 cursor-pointer border border-zinc-800 shadow-xl flex items-center justify-center p-2 group"
+            title="Clique para ampliar em proporção máxima"
+          >
+            <img
+              src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977936/WhatsApp_Image_2026-09-09_at_9.58.49_AM.jpg"
+              alt="Orçamento e Bancada Nova City MCZ"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+            <span className="absolute bottom-3 left-3 bg-[#00E676] text-black text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider shadow">
+              Nova City MCZ • Bancada de Conserto (Clique para Ampliar)
+            </span>
+          </div>
+
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-xs font-bold uppercase tracking-wider mb-3">
             <Wrench className="w-3.5 h-3.5" />
             Simulador de Orçamento Imediato

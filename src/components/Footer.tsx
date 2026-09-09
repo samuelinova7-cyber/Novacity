@@ -105,7 +105,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onClick={() => onNavigate('instagram-reels')}
                   className="hover:text-white transition-colors cursor-pointer"
                 >
-                  Instagram Reels 📱
+                  Instagram Oficial 📱
                 </button>
               </li>
             </ul>

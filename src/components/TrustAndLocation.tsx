@@ -3,7 +3,11 @@ import { MapPin, Clock, CreditCard, ShieldCheck, Copy, Check, Navigation, Phone,
 import { STORE_INFO } from '../data/storeData';
 import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 
-export const TrustAndLocation: React.FC = () => {
+interface TrustAndLocationProps {
+  onOpenLightbox?: (url: string) => void;
+}
+
+export const TrustAndLocation: React.FC<TrustAndLocationProps> = ({ onOpenLightbox }) => {
   const [copiedPix, setCopiedPix] = useState(false);
 
   const handleCopyPix = () => {
@@ -36,43 +40,60 @@ export const TrustAndLocation: React.FC = () => {
           {/* Left Column: Store Details & Trust Cards */}
           <div className="lg:col-span-6 flex flex-col justify-between space-y-6">
             
-            {/* Address Card */}
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl p-6 space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-green-500/10 border border-green-500/30 rounded-xl flex items-center justify-center text-green-400 shrink-0">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Endereço da Loja</h3>
-                  <p className="text-sm text-zinc-300 font-medium mt-0.5">
-                    {STORE_INFO.address}
-                  </p>
-                  <p className="text-xs text-zinc-500 mt-1">
-                    Ponto de referência de fácil acesso com estacionamento nas proximidades.
-                  </p>
-                </div>
+            {/* Address Card with Physical Store Photo */}
+            <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl overflow-hidden">
+              <div
+                onClick={() => onOpenLightbox && onOpenLightbox('https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.53_AM.jpg')}
+                className="relative h-48 bg-zinc-950 overflow-hidden cursor-pointer group"
+                title="Clique para ampliar a foto da loja física em tamanho máximo"
+              >
+                <img
+                  src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.53_AM.jpg"
+                  alt="Loja Física Nova City MCZ"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent" />
+                <span className="absolute top-3 left-3 bg-[#00E676] text-black text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider shadow">
+                  Loja Física em Maceió (Clique para Ampliar)
+                </span>
               </div>
+              <div className="p-6 space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-[#00E676]/10 border border-[#00E676]/30 rounded-xl flex items-center justify-center text-[#00E676] shrink-0">
+                    <MapPin className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">Venha nos visitar</h3>
+                    <p className="text-sm text-zinc-300 font-medium mt-0.5">
+                      {STORE_INFO.address}
+                    </p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      Bancada técnica aberta, acessórios originais e atendimento personalizado.
+                    </p>
+                  </div>
+                </div>
 
-              <div className="flex flex-wrap gap-3 pt-2">
-                <a
-                  href={STORE_INFO.mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-green-500 hover:bg-green-400 text-black px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm"
-                >
-                  <Navigation className="w-3.5 h-3.5" />
-                  <span>Abrir no Google Maps</span>
-                </a>
+                <div className="flex flex-wrap gap-3 pt-2">
+                  <a
+                    href={STORE_INFO.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-[#00E676] hover:bg-[#00c853] text-black px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all shadow-sm"
+                  >
+                    <Navigation className="w-3.5 h-3.5" />
+                    <span>Abrir no Google Maps</span>
+                  </a>
 
-                <a
-                  href={`https://waze.com/ul?q=${encodeURIComponent(STORE_INFO.address)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all"
-                >
-                  <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Navegar pelo Waze</span>
-                </a>
+                  <a
+                    href={`https://waze.com/ul?q=${encodeURIComponent(STORE_INFO.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
+                    <span>Navegar pelo Waze</span>
+                  </a>
+                </div>
               </div>
             </div>
 

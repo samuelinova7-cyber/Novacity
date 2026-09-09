@@ -26,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'desafio-tech', label: '🎮 Quiz & Ganhe', highlight: true },
     { id: 'localizacao', label: 'Como Chegar' },
     { id: 'depoimentos', label: 'Avaliações' },
-    { id: 'instagram-reels', label: 'Reels' },
+    { id: 'instagram-reels', label: 'Instagram' },
   ];
 
   const handleLinkClick = (id: string) => {
@@ -35,7 +35,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header id="main-navigation" className="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800/80 transition-all">
+    <header id="main-navigation" className="w-full bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/80 transition-all shadow-lg">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3.5 flex items-center justify-between">
         {/* Brand Logo */}
         <button
@@ -43,12 +43,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           onClick={() => handleLinkClick('inicio')}
           className="flex items-center gap-3 group text-left cursor-pointer"
         >
-          <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.35)] transition-transform group-hover:scale-105">
-            <Smartphone className="w-6 h-6 text-black stroke-[2.5]" />
+          <div className="relative w-11 h-11 rounded-xl overflow-hidden border-2 border-[#00E676] shadow-[0_0_20px_rgba(0,230,118,0.6)] animate-pulse transition-transform group-hover:scale-105">
+            <img
+              src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.32_AM.jpg"
+              alt="Nova City MCZ Logo"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-[#00E676]/10 mix-blend-overlay pointer-events-none" />
           </div>
           <div>
-            <div className="text-xl md:text-2xl font-black tracking-tight text-white leading-none">
-              NOVA CITY<span className="text-green-500">MCZ</span>
+            <div className="text-xl md:text-2xl font-black tracking-tight text-white leading-none flex items-center gap-1.5">
+              <span>NOVA CITY</span>
+              <span className="text-[#00E676] drop-shadow-[0_0_8px_rgba(0,230,118,0.8)]">MCZ</span>
             </div>
             <p className="text-[10px] uppercase font-semibold tracking-wider text-zinc-400 mt-0.5">
               Assistência & Acessórios

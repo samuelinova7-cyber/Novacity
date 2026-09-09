@@ -58,3 +58,37 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Glowing animation on all buttons across the site */
+button, a.btn-glow, [role="button"] {
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.35);
+  animation: pulseGlow 3s infinite;
+  transition: all 0.3s ease;
+}
+
+button:hover, a.btn-glow:hover, [role="button"]:hover {
+  box-shadow: 0 0 25px rgba(0, 230, 118, 0.85);
+  transform: translateY(-1px);
+}
+
+/* Informative Running Marquee Banner */
+@keyframes marqueeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 28s linear infinite;
+}
+
+.animate-ticker-marquee:hover {
+  animation-play-state: paused;
+}
+
+

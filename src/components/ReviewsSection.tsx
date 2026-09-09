@@ -2,7 +2,11 @@ import React, { useRef } from 'react';
 import { Star, ChevronLeft, ChevronRight, CheckCircle2, Award, Sparkles } from 'lucide-react';
 import { REVIEWS, STORE_INFO } from '../data/storeData';
 
-export const ReviewsSection: React.FC = () => {
+interface ReviewsSectionProps {
+  onOpenLightbox?: (url: string) => void;
+}
+
+export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ onOpenLightbox }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const handleScrollLeft = () => {
@@ -28,18 +32,18 @@ export const ReviewsSection: React.FC = () => {
         {/* Google Header */}
         <div className="flex flex-col items-center mb-8 text-center relative z-10">
           
-          {/* Espaço para a foto futura / Selo de Excelência */}
-          <div 
-            id="future-photo-placeholder"
-            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full bg-[#2a2a2a] border-2 border-dashed border-[#00E676] flex flex-col items-center justify-center text-zinc-400 text-[11px] sm:text-xs mb-4 text-center p-2.5 shadow-inner transition-transform hover:scale-105"
-            title="Espaço reservado para foto da loja física ou selo oficial"
+          {/* Logo Photo in Google Reviews with Glow & Animation & Lightbox */}
+          <div
+            onClick={() => onOpenLightbox && onOpenLightbox('https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.32_AM.jpg')}
+            className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-[#00E676] shadow-[0_0_25px_rgba(0,230,118,0.5)] animate-pulse mb-4 cursor-pointer transition-transform hover:scale-110 group"
+            title="Clique para ampliar a foto da Nova City MCZ nas Avaliações do Google"
           >
-            <div className="w-7 h-7 rounded-full bg-[#00E676]/20 flex items-center justify-center text-[#00E676] mb-1">
-              <Award className="w-4 h-4" />
-            </div>
-            <span className="font-semibold text-zinc-300 leading-tight">
-              [Espaço para sua Foto/Selo]
-            </span>
+            <img
+              src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.32_AM.jpg"
+              alt="Nova City MCZ Google Avaliações"
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+            />
+            <div className="absolute inset-0 bg-[#00E676]/15 mix-blend-overlay pointer-events-none" />
           </div>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-semibold text-zinc-300 mb-3">

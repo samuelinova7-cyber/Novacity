@@ -98,6 +98,18 @@ export const ProductModal: React.FC<ProductModalProps> = ({
                 {product.description}
               </p>
 
+              {/* Technical Specifications */}
+              {product.specifications && (
+                <div className="mt-3 bg-zinc-900/80 border border-zinc-800 rounded-xl p-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#00E676] block mb-1">
+                    Especificações Técnicas:
+                  </span>
+                  <p className="text-xs text-zinc-300 font-mono leading-relaxed">
+                    {product.specifications}
+                  </p>
+                </div>
+              )}
+
               {/* Color Selector */}
               {product.colors && product.colors.length > 0 && (
                 <div className="mt-4">

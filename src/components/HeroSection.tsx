@@ -6,11 +6,13 @@ import { getGeneralWhatsAppUrl } from '../utils/whatsapp';
 interface HeroSectionProps {
   onNavigateToCatalog: () => void;
   onNavigateToQuote: () => void;
+  onOpenLightbox?: (url: string) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onNavigateToCatalog,
   onNavigateToQuote,
+  onOpenLightbox,
 }) => {
   return (
     <section id="inicio" className="relative pt-6 pb-16 md:py-20 overflow-hidden">
@@ -103,17 +105,33 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="w-2.5 h-2.5 bg-zinc-900 rounded-full" />
               </div>
 
-              {/* Promo Card Inside Mockup */}
-              <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 rounded-2xl p-4 text-center space-y-1 relative overflow-hidden group">
-                <div className="absolute -top-6 -right-6 w-20 h-20 bg-green-500/10 rounded-full blur-xl" />
-                <span className="inline-block text-[10px] uppercase tracking-widest text-green-400 font-bold px-2 py-0.5 bg-green-500/10 border border-green-500/20 rounded-full">
-                  Destaque da Semana
-                </span>
-                <h3 className="font-bold text-lg text-white pt-1">Case MagSafe Space</h3>
-                <p className="text-xs text-zinc-400">Proteção antichoque para iPhone</p>
-                <div className="pt-2 flex items-baseline justify-center gap-2">
-                  <span className="text-xs text-zinc-500 line-through">R$ 89,90</span>
-                  <span className="text-xl font-black text-green-400">R$ 69,90</span>
+              {/* Promo Card Inside Mockup with Cloudinary Image in Maximum Proportion */}
+              <div className="bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 rounded-2xl overflow-hidden group">
+                <div
+                  onClick={() => onOpenLightbox && onOpenLightbox('https://res.cloudinary.com/mbpsuaz1/image/upload/v1788978308/WhatsApp_Image_2026-09-09_at_3.20.39_PM.jpg')}
+                  className="relative h-48 bg-black overflow-hidden cursor-pointer flex items-center justify-center p-2"
+                  title="Clique para ampliar em proporção máxima"
+                >
+                  <img
+                    src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788978308/WhatsApp_Image_2026-09-09_at_3.20.39_PM.jpg"
+                    alt="Case MagSafe Space Destaque da Semana"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60" />
+                  <span className="absolute top-2.5 left-2.5 bg-[#00E676] text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow">
+                    Destaque da Semana (Proporção Máxima)
+                  </span>
+                </div>
+                <div className="p-3.5 text-left space-y-1">
+                  <h3 className="font-bold text-sm text-white">Case MagSafe Space</h3>
+                  <p className="text-[11px] text-zinc-400">Proteção antichoque para iPhone</p>
+                  <div className="pt-1.5 flex items-baseline justify-between">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-[11px] text-zinc-500 line-through">R$ 89,90</span>
+                      <span className="text-base font-black text-[#00E676]">R$ 69,90</span>
+                    </div>
+                    <span className="text-[10px] text-zinc-400">Loja Física & Entrega</span>
+                  </div>
                 </div>
               </div>
 
@@ -122,7 +140,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="bg-zinc-900/60 border border-zinc-800/90 rounded-xl p-3 flex flex-col justify-between hover:border-zinc-700 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] uppercase font-bold text-zinc-400">Energia</span>
-                    <Zap className="w-3.5 h-3.5 text-green-400" />
+                    <Zap className="w-3.5 h-3.5 text-[#00E676]" />
                   </div>
                   <div>
                     <span className="text-xs font-bold text-white block">Fonte Turbo 20W</span>
@@ -133,7 +151,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 <div className="bg-zinc-900/60 border border-zinc-800/90 rounded-xl p-3 flex flex-col justify-between hover:border-zinc-700 transition-colors">
                   <div className="flex items-center justify-between">
                     <span className="text-[9px] uppercase font-bold text-zinc-400">Blindagem</span>
-                    <ShieldCheck className="w-3.5 h-3.5 text-green-400" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#00E676]" />
                   </div>
                   <div>
                     <span className="text-xs font-bold text-white block">Película 9D Cerâmica</span>
@@ -142,26 +160,35 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 </div>
               </div>
 
-              {/* Assistência Direct Interactive Box */}
-              <div className="bg-green-500/10 border border-green-500/30 rounded-2xl p-3.5 flex flex-col justify-between space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-green-400 uppercase tracking-tight">
-                    ASSISTÊNCIA TÉCNICA
-                  </span>
-                  <span className="bg-green-500 text-black text-[9px] font-extrabold px-2 py-0.5 rounded-full">
-                    DISPONÍVEL AGORA
+              {/* Assistência Direct Interactive Box with Image in Maximum Proportion */}
+              <div className="bg-zinc-900 border border-[#00E676]/30 rounded-2xl overflow-hidden flex flex-col">
+                <div
+                  onClick={() => onOpenLightbox && onOpenLightbox('https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.13.13_AM_1.jpg')}
+                  className="relative h-40 bg-black overflow-hidden cursor-pointer group flex items-center justify-center p-2"
+                  title="Clique para ampliar a imagem da assistência técnica"
+                >
+                  <img
+                    src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977938/WhatsApp_Image_2026-09-09_at_9.13.13_AM_1.jpg"
+                    alt="Assistência Técnica Express Nova City"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60" />
+                  <span className="absolute bottom-2 left-3 bg-[#00E676] text-black text-[9px] font-black px-2 py-0.5 rounded-full uppercase">
+                    Assistência Técnica Express (Proporção Máxima)
                   </span>
                 </div>
-                <p className="text-xs text-zinc-200 font-medium leading-snug">
-                  Tela trincada ou bateria fraca? Agende seu conserto em 1 clique.
-                </p>
-                <button
-                  onClick={onNavigateToQuote}
-                  className="w-full bg-zinc-900 hover:bg-zinc-800 text-green-400 border border-green-500/40 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                >
-                  <Smartphone className="w-3.5 h-3.5" />
-                  <span>Calcular Orçamento Online</span>
-                </button>
+                <div className="p-3 space-y-2">
+                  <p className="text-xs text-zinc-200 font-medium leading-snug">
+                    Especialistas em reparos rápidos. Tela trincada ou bateria fraca?
+                  </p>
+                  <button
+                    onClick={onNavigateToQuote}
+                    className="w-full bg-[#00E676] hover:bg-[#00c853] text-black py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span>Calcular Orçamento Online</span>
+                  </button>
+                </div>
               </div>
 
             </div>

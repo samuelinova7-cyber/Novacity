@@ -1,262 +1,109 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Instagram, Heart, MessageCircle, Play, Pause, ExternalLink, ChevronLeft, ChevronRight, Volume2, VolumeX, Sparkles } from 'lucide-react';
-import { REELS_DATA, STORE_INFO } from '../data/storeData';
-import { ReelItem } from '../types';
+import React from 'react';
+import { Instagram, Sparkles, ExternalLink, CheckCircle2, ShieldCheck, Heart, Zap } from 'lucide-react';
+import { STORE_INFO } from '../data/storeData';
 
-export const InstagramReelsSection: React.FC = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [likesState, setLikesState] = useState<{ [id: string]: { liked: boolean; count: number } }>({});
-  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+interface InstagramReelsSectionProps {
+  onOpenLightbox?: (url: string) => void;
+}
 
-  // Initialize likes state from REELS_DATA
-  useEffect(() => {
-    const initial: { [id: string]: { liked: boolean; count: number } } = {};
-    REELS_DATA.forEach((reel) => {
-      initial[reel.id] = { liked: false, count: reel.likes };
-    });
-    setLikesState(initial);
-  }, []);
-
-  // Smooth Auto-scroll loop as specified in the snippet
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    let intervalId: NodeJS.Timeout | null = null;
-
-    if (!isPaused) {
-      intervalId = setInterval(() => {
-        if (!container) return;
-        const maxScroll = container.scrollWidth - container.clientWidth;
-        if (container.scrollLeft >= maxScroll - 2) {
-          container.scrollLeft = 0;
-        } else {
-          container.scrollLeft += 1;
-        }
-      }, 30);
-    }
-
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, [isPaused]);
-
-  const handleToggleLike = (reelId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setLikesState((prev) => {
-      const current = prev[reelId] || { liked: false, count: 100 };
-      const isNowLiked = !current.liked;
-      return {
-        ...prev,
-        [reelId]: {
-          liked: isNowLiked,
-          count: isNowLiked ? current.count + 1 : current.count - 1,
-        },
-      };
-    });
-  };
-
-  const handleOpenInstagram = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    window.open(STORE_INFO.instagramUrl, '_blank', 'noopener,noreferrer');
-  };
-
-  const scrollManual = (direction: 'left' | 'right') => {
-    if (containerRef.current) {
-      const amount = direction === 'left' ? -270 : 270;
-      containerRef.current.scrollBy({ left: amount, behavior: 'smooth' });
-    }
-  };
-
+export const InstagramReelsSection: React.FC<InstagramReelsSectionProps> = ({ onOpenLightbox }) => {
   return (
     <section id="instagram-reels" className="py-16 md:py-20 px-4 md:px-8 max-w-7xl mx-auto">
-      <div className="bg-[#121212] border border-[#333333] rounded-3xl p-6 sm:p-10 relative overflow-hidden shadow-2xl">
+      <div className="relative bg-gradient-to-br from-[#16121a] via-[#121214] to-[#0d1410] border border-pink-500/20 rounded-3xl p-6 sm:p-10 md:p-14 overflow-hidden shadow-2xl">
         
-        {/* Subtle background glow */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#00E676]/10 rounded-full blur-3xl pointer-events-none" />
+        {/* Ambient Glows */}
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-gradient-to-br from-pink-500/15 via-purple-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-gradient-to-tr from-[#00E676]/15 via-emerald-600/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 relative z-10">
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-pink-500/15 via-purple-500/15 to-amber-500/15 border border-pink-500/30 text-pink-400 text-xs font-bold uppercase tracking-wider mb-3">
-              <Instagram className="w-3.5 h-3.5 text-pink-400" />
-              <span>@novacitymcz no Instagram</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight font-['Outfit',sans-serif]">
-              Acompanhe nosso dia a dia no Instagram
-            </h2>
-            <p className="text-sm text-zinc-400 mt-1 max-w-xl">
-              Confira os bastidores dos consertos, novidades em acessórios premium e entregas para clientes em Maceió.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Direct profile button */}
-            <a
-              href={STORE_INFO.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:opacity-95 transition-transform hover:scale-105"
+        <div className="relative z-10 max-w-4xl mx-auto text-center flex flex-col items-center">
+          
+          {/* Instagram Profile Avatar with Glow */}
+          <div className="relative mb-6 group">
+            <div
+              onClick={() => onOpenLightbox && onOpenLightbox('https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.32_AM.jpg')}
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 shadow-[0_0_35px_rgba(236,72,153,0.4)] cursor-pointer transition-transform group-hover:scale-105"
+              title="Clique para ampliar o perfil"
             >
+              <div className="w-full h-full rounded-full overflow-hidden bg-black p-0.5">
+                <img
+                  src="https://res.cloudinary.com/mbpsuaz1/image/upload/v1788977945/WhatsApp_Image_2026-09-09_at_9.11.32_AM.jpg"
+                  alt="Nova City MCZ no Instagram"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              </div>
+            </div>
+
+            {/* Verified badge */}
+            <div className="absolute bottom-0 right-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white p-1 rounded-full shadow-lg border-2 border-[#121214]">
               <Instagram className="w-4 h-4" />
-              <span>Seguir no Instagram</span>
-            </a>
-
-            {/* Manual scroll navigation buttons */}
-            <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-full p-1">
-              <button
-                onClick={() => scrollManual('left')}
-                aria-label="Reel anterior"
-                className="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center hover:bg-zinc-700 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => scrollManual('right')}
-                aria-label="Próximo reel"
-                className="w-8 h-8 rounded-full bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center hover:bg-zinc-700 transition-colors"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Reels Lado a Lado (Rolagem Infinita / Automática + Arrastável) */}
-        <div
-          ref={containerRef}
-          id="reelsContainer"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-          className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar cursor-grab active:cursor-grabbing select-none"
-        >
-          {REELS_DATA.map((reel) => {
-            const likeInfo = likesState[reel.id] || { liked: false, count: reel.likes };
-
-            return (
-              <div
-                key={reel.id}
-                className="flex-none w-[240px] sm:w-[260px] h-[444px] bg-[#242424] rounded-2xl overflow-hidden snap-start relative border border-[#333333] shadow-[0_4px_20px_rgba(0,0,0,0.6)] group hover:border-[#00E676]/70 transition-all"
-              >
-                {/* Media representation / Visual background */}
-                <div className="w-full h-full relative overflow-hidden bg-zinc-900">
-                  <img
-                    src={reel.thumbnailUrl}
-                    alt={reel.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-90"
-                    loading="lazy"
-                  />
-                  
-                  {/* Top Badge */}
-                  <div className="absolute top-3 left-3 z-10">
-                    <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#00E676] animate-ping" />
-                      {reel.badge || 'Reel'}
-                    </span>
-                  </div>
-
-                  {/* Top Instagram Logo Watermark */}
-                  <div className="absolute top-3 right-3 z-10 w-7 h-7 rounded-full bg-black/50 backdrop-blur-md flex items-center justify-center text-white/80">
-                    <Instagram className="w-3.5 h-3.5" />
-                  </div>
-                </div>
-
-                {/* Sobreposição de interação simulando o Instagram */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/95 via-black/75 to-transparent pt-16 pb-4 px-4 flex justify-between items-end z-20">
-                  
-                  {/* Reel info & description */}
-                  <div className="pr-2 flex-1">
-                    <div className="flex items-center gap-1.5 mb-1.5">
-                      <span className="text-xs font-black text-[#00E676] tracking-wide">
-                        {reel.tag}
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-100 font-medium leading-snug line-clamp-2">
-                      {reel.caption}
-                    </p>
-                    <button
-                      onClick={() => handleOpenInstagram()}
-                      className="mt-2 text-[10px] font-bold text-zinc-400 hover:text-white flex items-center gap-1 transition-colors"
-                    >
-                      <span>Ver no Instagram</span>
-                      <ExternalLink className="w-2.5 h-2.5" />
-                    </button>
-                  </div>
-
-                  {/* Reel action buttons column */}
-                  <div className="flex flex-col gap-2.5 items-center shrink-0">
-                    {/* Like button */}
-                    <button
-                      type="button"
-                      onClick={(e) => handleToggleLike(reel.id, e)}
-                      aria-label="Curtir reel"
-                      className={`w-9 h-9 rounded-full flex flex-col items-center justify-center backdrop-blur-md transition-all transform active:scale-125 ${
-                        likeInfo.liked
-                          ? 'bg-red-500/20 text-red-500 border border-red-500/40'
-                          : 'bg-black/60 text-white hover:bg-[#00E676] hover:text-black border border-white/10'
-                      }`}
-                    >
-                      <Heart
-                        className={`w-4 h-4 transition-transform ${
-                          likeInfo.liked ? 'fill-red-500 text-red-500 scale-110' : ''
-                        }`}
-                      />
-                    </button>
-                    <span className="text-[10px] font-bold text-zinc-300 font-mono">
-                      {likeInfo.count}
-                    </span>
-
-                    {/* Comment / Instagram link button */}
-                    <button
-                      type="button"
-                      onClick={(e) => handleOpenInstagram(e)}
-                      aria-label="Comentar no Instagram"
-                      className="w-9 h-9 rounded-full bg-black/60 hover:bg-[#00E676] hover:text-black text-white border border-white/10 flex items-center justify-center backdrop-blur-md transition-all transform hover:scale-110 cursor-pointer"
-                      title="Abrir no Instagram"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                    </button>
-                  </div>
-
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom banner for Instagram CTA */}
-        <div className="mt-8 pt-6 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 p-[2px] shrink-0">
-              <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                <Instagram className="w-5 h-5 text-pink-400" />
-              </div>
-            </div>
-            <div>
-              <span className="text-sm font-bold text-white block">
-                Siga a @novacitymcz
-              </span>
-              <span className="text-xs text-zinc-400">
-                Postamos stories diários com reposições, promoções e dicas técnicas!
-              </span>
             </div>
           </div>
 
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-amber-500/20 border border-pink-500/30 text-pink-400 text-xs font-bold uppercase tracking-wider mb-4">
+            <Instagram className="w-4 h-4 text-pink-400" />
+            <span>@novacitymcz no Instagram Oficial</span>
+          </div>
+
+          {/* Headline */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight font-['Outfit',sans-serif] leading-tight mb-4">
+            Acompanhe a <span className="bg-gradient-to-r from-pink-400 via-purple-400 to-[#00E676] bg-clip-text text-transparent">Nova City MCZ</span> no Instagram
+          </h2>
+
+          <p className="text-sm sm:text-base text-zinc-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+            Fique por dentro das novidades em acessórios premium, bastidores de consertos na bancada, lançamentos de cases, películas e promoções relâmpago em Maceió.
+          </p>
+
+          {/* 3 Value Highlights */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full mb-8 text-left">
+            <div className="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/30 flex items-center justify-center text-pink-400 shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Stories & Bastidores</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Veja o dia a dia dos reparos e novidades que chegam na loja.</p>
+              </div>
+            </div>
+
+            <div className="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+                <Zap className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Ofertas Relâmpago</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Descontos especiais divulgados com exclusividade no feed.</p>
+              </div>
+            </div>
+
+            <div className="bg-zinc-900/80 border border-zinc-800/80 rounded-2xl p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-xl bg-[#00E676]/15 border border-[#00E676]/30 flex items-center justify-center text-[#00E676] shrink-0">
+                <Heart className="w-4 h-4" />
+              </div>
+              <div>
+                <h4 className="text-xs font-bold text-white uppercase tracking-wider">Atendimento Rápido</h4>
+                <p className="text-[11px] text-zinc-400 mt-0.5">Tire dúvidas e solicite cotações diretamente pelo Direct.</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Dedicated Follow Button */}
           <a
             href={STORE_INFO.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-700 hover:border-pink-500/60 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
+            className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white font-extrabold text-sm sm:text-base uppercase tracking-wider transition-all transform hover:scale-105 shadow-[0_0_30px_rgba(236,72,153,0.5)] border border-pink-400/30 cursor-pointer"
           >
-            <span>Acessar @novacitymcz</span>
-            <ExternalLink className="w-3.5 h-3.5 text-pink-400" />
+            <Instagram className="w-5 h-5 text-white" />
+            <span>Seguir @novacitymcz no Instagram</span>
+            <ExternalLink className="w-4 h-4 text-white/80" />
           </a>
-        </div>
 
+          <p className="text-xs text-zinc-500 mt-4">
+            Maceió - AL • Jaraguá & Centro • Conteúdo diário e suporte especializado
+          </p>
+
+        </div>
       </div>
     </section>
   );

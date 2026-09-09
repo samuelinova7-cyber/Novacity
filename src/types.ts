@@ -1,13 +1,14 @@
 export interface Product {
   id: string;
   name: string;
-  category: 'capinhas' | 'carregadores' | 'fones' | 'smartwatches' | 'peliculas' | 'copos' | 'audio';
+  category: string;
   categoryLabel: string;
   price: number;
   originalPrice?: number;
   image: string;
   badge?: string;
   description: string;
+  specifications?: string;
   compatibleWith?: string[];
   colors?: string[];
   inStock: boolean;
