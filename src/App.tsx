@@ -97,7 +97,7 @@ export default function App() {
   // Monitor scroll for active nav section
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['inicio', 'servicos', 'produtos', 'orcamento', 'desafio-tech', 'localizacao', 'depoimentos', 'instagram-reels'];
+      const sections = ['inicio', 'servicos', 'instagram-reels', 'produtos', 'depoimentos', 'orcamento', 'desafio-tech', 'localizacao'];
       const scrollPos = window.scrollY + 120;
 
       for (const section of sections) {
@@ -145,6 +145,9 @@ export default function App() {
         {/* Quick Services Bar */}
         <ServicesSection onSelectServiceForQuote={handleSelectServiceForQuote} />
 
+        {/* Instagram Daily Life & Reels Showcase */}
+        <InstagramReelsSection onOpenLightbox={(url) => setLightboxImage(url)} />
+
         {/* Product Showcase / Vitrine */}
         <ProductCatalog
           onSelectProduct={(product) => setSelectedProduct(product)}
@@ -154,6 +157,9 @@ export default function App() {
           }}
           onOpenLightbox={(url) => setLightboxImage(url)}
         />
+
+        {/* Customer Reviews & Social Proof (Google Reviews) */}
+        <ReviewsSection onOpenLightbox={(url) => setLightboxImage(url)} />
 
         {/* Interactive Repair Quote Calculator Form */}
         <RepairQuoteForm
@@ -166,12 +172,6 @@ export default function App() {
 
         {/* Local Trust & Location Map Section */}
         <TrustAndLocation onOpenLightbox={(url) => setLightboxImage(url)} />
-
-        {/* Customer Reviews & Social Proof */}
-        <ReviewsSection onOpenLightbox={(url) => setLightboxImage(url)} />
-
-        {/* Instagram Daily Life & Reels Showcase */}
-        <InstagramReelsSection onOpenLightbox={(url) => setLightboxImage(url)} />
       </main>
 
       {/* Footer */}

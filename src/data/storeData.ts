@@ -8,7 +8,7 @@ export const STORE_INFO = {
   address: 'Rua do Uruguai, 338D - Jaraguá / Centro, Maceió - AL',
   addressShort: 'Rua do Uruguai, 338D - Maceió',
   mapsUrl: 'https://maps.google.com/?q=Rua+do+Uruguai+338D+Maceio+AL',
-  googleReviewUrl: 'https://g.page/r/SEU-LINK-DO-GOOGLE-AQUI/review',
+  googleReviewUrl: 'https://g.page/r/CZLXOBZJB9BSECE/review',
   googleReviewMaceioUrl: 'https://g.page/r/LINK-GOOGLE-MACEIO',
   googleReviewFrancesUrl: 'https://g.page/r/LINK-GOOGLE-FRANCES',
   instagram: '@novacitymcz',
