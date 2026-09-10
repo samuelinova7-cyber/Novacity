@@ -43,15 +43,19 @@ export const TechChallengeQuiz: React.FC = () => {
     }
   };
 
-  const handleUnlockCoupon = (storeName: string, reviewUrl: string) => {
-    setSelectedStore(storeName);
-    // Open Google Review in new tab
-    window.open(reviewUrl, '_blank', 'noopener,noreferrer');
+  const handleUnlockCoupon = (storeName?: string, reviewUrl?: string) => {
+    if (storeName) {
+      setSelectedStore(storeName);
+    }
+    const targetUrl = reviewUrl || STORE_INFO.googleReviewUrl;
+    
+    // Open Google Review in new tab to validate the bombom
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
 
     // Transition to coupon release stage
     setTimeout(() => {
       setStage('coupon');
-    }, 1200);
+    }, 1000);
   };
 
   const handleCopyCoupon = () => {
@@ -180,86 +184,133 @@ export const TechChallengeQuiz: React.FC = () => {
         )}
 
         {/* ========================================================================= */}
-        {/* ETAPA 2: A ROLETA / PRÊMIO */}
+        {/* ETAPA 2: VALIDAÇÃO DO BOMBOM COM AVALIAÇÃO NO GOOGLE */}
         {/* ========================================================================= */}
         {stage === 'reward' && (
-          <div id="reward-box" className="bg-[#1e1e1e] border border-zinc-700 rounded-2xl p-6 sm:p-8 text-center shadow-2xl animate-fade-in">
-            <div className="w-16 h-16 bg-[#00E676]/20 border border-[#00E676] rounded-full flex items-center justify-center text-[#00E676] mx-auto mb-4">
-              <Award className="w-8 h-8" />
+          <div id="reward-box" className="bg-[#1e1e1e] border-2 border-[#00E676]/60 rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_35px_rgba(0,230,118,0.2)] animate-fade-in relative overflow-hidden">
+            
+            <div className="w-20 h-20 bg-[#00E676]/15 border-2 border-[#00E676] rounded-full flex items-center justify-center text-[#00E676] mx-auto mb-4 shadow-[0_0_20px_rgba(0,230,118,0.4)] animate-bounce">
+              <span className="text-3xl">🍫</span>
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
-              🎉 Você Venceu o Desafio!
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>Etapa Final • Validação do Prêmio</span>
+            </div>
+
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 font-['Outfit',sans-serif]">
+              🎉 Você Concluiu as Perguntas!
             </h3>
-            <p className="text-zinc-300 text-sm sm:text-base max-w-md mx-auto mb-4">
-              Você acertou todas as perguntas e garantiu um <strong className="text-white">Bombom Grátis</strong> + Oferta Exclusiva na Nova City!
+            
+            <p className="text-zinc-300 text-sm sm:text-base max-w-lg mx-auto mb-4">
+              Você acertou o desafio e garantiu o seu brinde exclusivo da Nova City MCZ!
             </p>
 
             {/* Prize Highlight Box */}
-            <div className="bg-[#00E676]/10 border border-dashed border-[#00E676] p-4 sm:p-5 rounded-2xl text-[#00E676] text-base sm:text-lg font-bold my-5 max-w-lg mx-auto shadow-[0_0_20px_rgba(0,230,118,0.15)] flex items-center justify-center gap-2">
-              <Gift className="w-6 h-6 text-[#00E676] shrink-0" />
-              <span>🎁 1 Bombom Grátis + 20% OFF em Películas & Acessórios</span>
+            <div className="bg-gradient-to-r from-amber-500/10 via-[#00E676]/15 to-amber-500/10 border-2 border-dashed border-[#00E676] p-4 sm:p-6 rounded-2xl my-5 max-w-lg mx-auto shadow-[0_0_25px_rgba(0,230,118,0.2)]">
+              <div className="flex items-center justify-center gap-2 text-[#00E676] text-lg sm:text-xl font-black">
+                <Gift className="w-6 h-6 text-[#00E676] shrink-0" />
+                <span>🎁 1 Bombom Grátis no Balcão</span>
+              </div>
+              <p className="text-xs sm:text-sm text-zinc-300 font-semibold mt-1">
+                + 20% de Desconto em Películas & Acessórios na Loja
+              </p>
             </div>
 
-            <p className="text-xs sm:text-sm text-zinc-400 mt-4 max-w-md mx-auto">
-              Para liberar o seu código de resgate, escolha onde deseja retirar seu brinde e deixe uma rápida avaliação no Google:
-            </p>
-
-            {/* Store Selection Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mt-5">
-              <button
-                type="button"
-                onClick={() => handleUnlockCoupon('Maceió (Rua do Uruguai)', STORE_INFO.googleReviewMaceioUrl || STORE_INFO.googleReviewUrl)}
-                className="flex-1 bg-[#2a2a2a] hover:bg-[#333] hover:border-[#00E676] text-white p-3.5 rounded-xl border border-zinc-700 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
-              >
-                <MapPin className="w-4 h-4 text-[#00E676] group-hover:scale-110 transition-transform" />
-                <span>📍 Loja Maceió (Rua do Uruguai)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleUnlockCoupon('Praia do Francês', STORE_INFO.googleReviewFrancesUrl || STORE_INFO.googleReviewUrl)}
-                className="flex-1 bg-[#2a2a2a] hover:bg-[#333] hover:border-[#00E676] text-white p-3.5 rounded-xl border border-zinc-700 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-2 group cursor-pointer"
-              >
-                <span className="text-base group-hover:scale-110 transition-transform">🏖️</span>
-                <span>Loja Praia do Francês</span>
-              </button>
+            {/* Validation Explanation */}
+            <div className="bg-black/60 border border-zinc-800 rounded-2xl p-4 sm:p-5 max-w-lg mx-auto my-6 text-left">
+              <div className="flex items-center gap-2 text-amber-400 font-black text-xs sm:text-sm uppercase tracking-wide mb-1.5">
+                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Como validar e retirar seu bombom:</span>
+              </div>
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                Clique no botão abaixo para <strong>avaliar com 5 estrelas no Google</strong>. Isso validará o seu bombom e liberará o código do cupom para apresentar no balcão da loja!
+              </p>
             </div>
+
+            {/* PRIMARY GOOGLE REVIEW VALIDATION BUTTON */}
+            <div className="max-w-md mx-auto flex flex-col gap-3">
+              <button
+                type="button"
+                id="btn-validate-bombom-google"
+                onClick={() => handleUnlockCoupon('Loja Maceió (Rua do Uruguai)', STORE_INFO.googleReviewUrl)}
+                className="w-full bg-gradient-to-r from-amber-400 via-[#00E676] to-emerald-400 hover:from-amber-300 hover:to-emerald-300 text-black font-black py-4 px-6 rounded-2xl text-sm sm:text-base uppercase tracking-wider transition-all transform hover:scale-[1.03] active:scale-[0.98] shadow-[0_0_30px_rgba(0,230,118,0.5)] border-2 border-white/20 flex items-center justify-center gap-2.5 cursor-pointer"
+              >
+                <span className="text-lg">⭐</span>
+                <span>AVALIAR NO GOOGLE & VALIDAR BOMBOM</span>
+                <Sparkles className="w-4 h-4 fill-black" />
+              </button>
+
+              <span className="text-[11px] text-zinc-400">
+                (Abre o Google Reviews da Nova City e libera seu cupom na hora)
+              </span>
+            </div>
+
+            {/* Store Selection Alternative Options */}
+            <div className="mt-8 pt-6 border-t border-zinc-800 max-w-lg mx-auto">
+              <p className="text-xs text-zinc-400 mb-3">
+                Ou escolha diretamente por unidade para avaliar:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => handleUnlockCoupon('Loja Maceió (Rua do Uruguai)', STORE_INFO.googleReviewMaceioUrl || STORE_INFO.googleReviewUrl)}
+                  className="flex-1 bg-[#242424] hover:bg-zinc-800 text-zinc-200 hover:text-white p-3 rounded-xl border border-zinc-700 hover:border-[#00E676] font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-[#00E676]" />
+                  <span>📍 Maceió (Rua do Uruguai)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleUnlockCoupon('Loja Praia do Francês', STORE_INFO.googleReviewFrancesUrl || STORE_INFO.googleReviewUrl)}
+                  className="flex-1 bg-[#242424] hover:bg-zinc-800 text-zinc-200 hover:text-white p-3 rounded-xl border border-zinc-700 hover:border-[#00E676] font-bold text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>🏖️ Praia do Francês</span>
+                </button>
+              </div>
+            </div>
+
           </div>
         )}
 
         {/* ========================================================================= */}
-        {/* ETAPA 3: CUPOM FINAL LIBERADO */}
+        {/* ETAPA 3: CUPOM FINAL LIBERADO & VALIDADO */}
         {/* ========================================================================= */}
         {stage === 'coupon' && (
-          <div id="coupon-box" className="bg-[#1e1e1e] border-2 border-[#00E676] rounded-2xl p-6 sm:p-8 text-center shadow-[0_0_30px_rgba(0,230,118,0.25)] animate-scale-up">
-            <div className="w-14 h-14 bg-[#00E676] rounded-full flex items-center justify-center text-black mx-auto mb-3 shadow-[0_0_20px_rgba(0,230,118,0.6)]">
-              <Sparkles className="w-7 h-7" />
+          <div id="coupon-box" className="bg-[#1e1e1e] border-2 border-[#00E676] rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_40px_rgba(0,230,118,0.3)] animate-scale-up">
+            <div className="w-16 h-16 bg-[#00E676] rounded-full flex items-center justify-center text-black mx-auto mb-3 shadow-[0_0_25px_rgba(0,230,118,0.6)]">
+              <Sparkles className="w-8 h-8" />
             </div>
 
-            <h3 className="text-2xl sm:text-3xl font-extrabold text-[#00E676] mb-2">
-              🎟️ Cupom Liberado com Sucesso!
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00E676]/15 border border-[#00E676]/40 text-[#00E676] text-xs font-black uppercase tracking-wider mb-3">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Validação Concluída • Prêmio Liberado</span>
+            </div>
+
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 font-['Outfit',sans-serif]">
+              🍫 Bombom Validado com Sucesso!
             </h3>
             
             {selectedStore && (
-              <span className="inline-block bg-zinc-800 text-zinc-300 text-xs px-3 py-1 rounded-full border border-zinc-700 mb-3">
-                Unidade escolhida: <strong>{selectedStore}</strong>
+              <span className="inline-block bg-zinc-800 text-zinc-300 text-xs px-3.5 py-1 rounded-full border border-zinc-700 mb-3">
+                Unidade de retirada: <strong>{selectedStore}</strong>
               </span>
             )}
 
             <p className="text-zinc-300 text-sm sm:text-base max-w-md mx-auto mb-4">
-              Apresente este código no balcão da unidade escolhida para retirar seu <strong>bombom</strong> e aplicar o desconto de <strong>20%</strong>:
+              Apresente este código no balcão da loja para retirar seu <strong>bombom</strong> e aplicar o desconto de <strong>20%</strong>:
             </p>
 
             {/* Coupon Code Block with Copy Action */}
-            <div className="max-w-md mx-auto my-4 bg-black border-2 border-[#00E676] rounded-xl p-4 flex items-center justify-between shadow-inner">
+            <div className="max-w-md mx-auto my-5 bg-black border-2 border-[#00E676] rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-inner">
               <div className="font-mono text-xl sm:text-2xl font-black text-[#00E676] tracking-widest pl-2">
                 NOVACITY-TECH2026
               </div>
               <button
                 type="button"
                 onClick={handleCopyCoupon}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-zinc-800 hover:bg-[#00E676] hover:text-black text-white text-xs font-bold transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-[#00E676] hover:text-black text-white text-xs font-bold transition-all cursor-pointer shadow"
                 title="Copiar código do cupom"
               >
                 {isCopied ? (
@@ -270,14 +321,20 @@ export const TechChallengeQuiz: React.FC = () => {
                 ) : (
                   <>
                     <Copy className="w-4 h-4" />
-                    <span>Copiar</span>
+                    <span>Copiar Código</span>
                   </>
                 )}
               </button>
             </div>
 
+            {/* Physical Location Instruction */}
+            <div className="p-3 bg-zinc-900/90 rounded-xl border border-zinc-800 max-w-md mx-auto mb-5 text-xs text-zinc-300 flex items-center gap-2 justify-center">
+              <MapPin className="w-4 h-4 text-[#00E676] shrink-0" />
+              <span>Retirada: <strong>Rua do Uruguai, 338D - Jaraguá / Centro, Maceió</strong></span>
+            </div>
+
             <p className="text-xs text-zinc-400 mt-2 mb-6">
-              *Válido apenas hoje. Apresente no balcão ou envie direto pelo WhatsApp para adiantar seu atendimento!
+              *Apresente o cupom e sua avaliação no balcão da loja ou envie direto pelo WhatsApp!
             </p>
 
             {/* Actions */}
@@ -286,21 +343,33 @@ export const TechChallengeQuiz: React.FC = () => {
                 href={whatsappQuizUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto flex-1 bg-[#00C853] hover:bg-[#00E676] text-black font-extrabold px-6 py-3.5 rounded-full text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,200,83,0.4)] transition-all flex items-center justify-center gap-2 hover:scale-105"
+                className="w-full sm:w-auto flex-1 bg-[#00C853] hover:bg-[#00E676] text-black font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,200,83,0.4)] transition-all flex items-center justify-center gap-2 hover:scale-105"
               >
                 <MessageSquare className="w-4 h-4" />
-                <span>💬 Enviar Cupom no WhatsApp</span>
+                <span>💬 Enviar no WhatsApp</span>
               </a>
 
               <button
                 type="button"
                 onClick={handleReset}
-                className="w-full sm:w-auto px-4 py-3 rounded-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full sm:w-auto px-4 py-3.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer border border-zinc-700"
                 title="Jogar novamente"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Jogar de Novo</span>
               </button>
+            </div>
+
+            {/* Quick Link to Google Review if needed */}
+            <div className="mt-4">
+              <a
+                href={STORE_INFO.googleReviewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-zinc-400 hover:text-amber-400 underline transition-colors inline-flex items-center gap-1"
+              >
+                <span>⭐ Reabrir página de avaliação no Google</span>
+              </a>
             </div>
           </div>
         )}

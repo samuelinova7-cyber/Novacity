@@ -9,7 +9,7 @@ export const STORE_INFO = {
   addressShort: 'Rua do Uruguai, 338D - Maceió',
   mapsUrl: 'https://maps.google.com/?q=Rua+do+Uruguai+338D+Maceio+AL',
   googleReviewUrl: 'https://g.page/r/CZLXOBZJB9BSECE/review',
-  googleReviewMaceioUrl: 'https://g.page/r/LINK-GOOGLE-MACEIO',
+  googleReviewMaceioUrl: 'https://g.page/r/CZLXOBZJB9BSECE/review',
   googleReviewFrancesUrl: 'https://g.page/r/LINK-GOOGLE-FRANCES',
   instagram: '@novacitymcz',
   instagramUrl: 'https://instagram.com/novacitymcz',
