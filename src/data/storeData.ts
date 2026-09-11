@@ -1,4 +1,4 @@
-import { Product, ServiceItem, Review, ReelItem, QuizQuestion } from '../types';
+import { Product, ServiceItem, Review, ReelItem, QuizQuestion, EvaluationQuestion } from '../types';
 
 export const STORE_INFO = {
   name: 'Nova City MCZ',
@@ -936,3 +936,51 @@ export const QUIZ_QUESTIONS: QuizQuestion[] = [
     ],
   },
 ];
+
+export const EVALUATION_QUESTIONS: EvaluationQuestion[] = [
+  {
+    id: 1,
+    category: 'Atendimento & Rapidez',
+    question: 'Como você avalia a agilidade e o atendimento da equipe Nova City MCZ?',
+    subtitle: 'Sua opinião nos ajuda a manter o padrão de atendimento mais rápido de Maceió!',
+    options: [
+      { text: '⭐⭐⭐⭐⭐ Excelente (Rápido, educado e transparente)', stars: 5, badge: 'Nota 10', feedback: 'Obrigado! Priorizamos diagnóstico ágil e atendimento humanizado.', icon: 'Zap' },
+      { text: '⭐⭐⭐⭐ Muito Bom (Superou minhas expectativas)', stars: 4, badge: 'Top', feedback: 'Que ótimo! Estamos sempre prontos para lhe atender com excelência.', icon: 'CheckCircle' },
+      { text: '⭐⭐⭐ Bom (Atendimento atencioso)', stars: 3, badge: 'Positivo', feedback: 'Agradecemos pelo carinho e preferência!', icon: 'ThumbsUp' },
+    ],
+  },
+  {
+    id: 2,
+    category: 'Qualidade & Peças',
+    question: 'Como você avalia a qualidade das nossas peças, películas 9D e acessórios?',
+    subtitle: 'Trabalhamos apenas com peças de procedência e garantia real de 90 dias.',
+    options: [
+      { text: '⭐⭐⭐⭐⭐ Máxima Qualidade (Peças premium e durabilidade total)', stars: 5, badge: 'Qualidade Total', feedback: 'Sensacional! Só utilizamos produtos de alta procedência e testados.', icon: 'ShieldCheck' },
+      { text: '⭐⭐⭐⭐ Ótima Durabilidade (Muito superior ao padrão do mercado)', stars: 4, badge: 'Garantido', feedback: 'Nossos testes garantem a máxima segurança para o seu aparelho.', icon: 'Award' },
+      { text: '⭐⭐⭐ Satisfeito com a Proteção & Acabamento', stars: 3, badge: 'Aprovado', feedback: 'Ficamos muito felizes em proteger seu smartphone com perfeição.', icon: 'Sparkles' },
+    ],
+  },
+  {
+    id: 3,
+    category: 'Preço & Condições',
+    question: 'O que você achou dos preços, desconto no Pix e parcelamento em até 12x?',
+    subtitle: 'O melhor custo-benefício em assistência técnica e acessórios na capital.',
+    options: [
+      { text: '⭐⭐⭐⭐⭐ Preço Justo com Ótimo Desconto no Pix', stars: 5, badge: 'Economia Real', feedback: 'Excelente! Oferecemos as melhores condições de pagamento de Maceió.', icon: 'Tag' },
+      { text: '⭐⭐⭐⭐ Parcelamento Facilitado (Até 12x no cartão de crédito)', stars: 4, badge: 'Flexível', feedback: 'Sem burocracia para você resolver seu celular na hora.', icon: 'CreditCard' },
+      { text: '⭐⭐⭐ Ótimo Custo-Benefício na Rua do Uruguai', stars: 3, badge: 'Justo', feedback: 'Localização central e acessível para todos os clientes.', icon: 'Check' },
+    ],
+  },
+  {
+    id: 4,
+    category: 'Recomendação & Confiança',
+    question: 'Você recomendaria a Nova City MCZ para amigos e familiares em Maceió?',
+    subtitle: 'Mais de 10.000 clientes satisfeitos em Alagoas!',
+    options: [
+      { text: '⭐⭐⭐⭐⭐ Com Certeza! Recomendo de olhos fechados', stars: 5, badge: '100% Recomendado', feedback: 'Isso é o que nos move! Muito obrigado pela sua confiança.', icon: 'Heart' },
+      { text: '⭐⭐⭐⭐ Sim, indico para consertos express e compras rápidas', stars: 4, badge: 'Indicação Forte', feedback: 'Maravilha! Ficaremos muito honrados em atender seus amigos.', icon: 'Users' },
+      { text: '⭐⭐⭐ Sim, excelente opção no Jaraguá / Centro', stars: 3, badge: 'Recomendado', feedback: 'Sua parceria é fundamental para o nosso crescimento.', icon: 'Star' },
+    ],
+  },
+];
+

@@ -89,7 +89,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   onClick={() => onNavigate('desafio-tech')}
                   className="text-[#00E676] hover:text-white font-semibold transition-colors cursor-pointer"
                 >
-                  🎮 Desafio Tech & Bombom Grátis
+                  ⭐ Avalie & Ganhe Bombom Grátis 🍫
                 </button>
               </li>
               <li>

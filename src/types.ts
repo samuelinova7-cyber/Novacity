@@ -59,7 +59,7 @@ export interface CartItem {
 
 export interface QuizOption {
   text: string;
-  isCorrect: boolean;
+  isCorrect?: boolean;
   explanation?: string;
 }
 
@@ -67,5 +67,21 @@ export interface QuizQuestion {
   id: number;
   question: string;
   options: QuizOption[];
-  tip: string;
+  tip?: string;
+}
+
+export interface EvaluationOption {
+  text: string;
+  stars?: number;
+  badge?: string;
+  feedback?: string;
+  icon?: string;
+}
+
+export interface EvaluationQuestion {
+  id: number;
+  category: string;
+  question: string;
+  subtitle: string;
+  options: EvaluationOption[];
 }

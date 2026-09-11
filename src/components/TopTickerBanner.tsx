@@ -24,8 +24,8 @@ export const TopTickerBanner: React.FC<TopTickerBannerProps> = ({ onNavigateToQu
       icon: Flame,
     },
     {
-      badge: 'GANHE UM BOMBOM 🍫',
-      text: 'Participe do Desafio Tech no site e retire seu prêmio na loja!',
+      badge: 'AVALIE & GANHE 🍫',
+      text: 'Responda a avaliação no site, avalie no Google e retire 1 Bombom Grátis + 20% OFF!',
       icon: Gift,
     },
     {

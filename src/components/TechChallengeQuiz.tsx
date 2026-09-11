@@ -1,46 +1,100 @@
 import React, { useState } from 'react';
-import { Gamepad2, Gift, CheckCircle2, XCircle, Sparkles, Copy, Check, MessageSquare, ArrowRight, RotateCcw, MapPin, Award } from 'lucide-react';
-import { QUIZ_QUESTIONS, STORE_INFO } from '../data/storeData';
+import {
+  Star,
+  Gift,
+  CheckCircle2,
+  Sparkles,
+  Copy,
+  Check,
+  MessageSquare,
+  RotateCcw,
+  MapPin,
+  Award,
+  Volume2,
+  VolumeX,
+  Heart,
+  Zap,
+  ShieldCheck,
+  Tag,
+  CreditCard,
+  Users,
+  ThumbsUp,
+  ArrowRight,
+  MessageCircle
+} from 'lucide-react';
+import { EVALUATION_QUESTIONS, STORE_INFO } from '../data/storeData';
+import { soundEffects } from '../utils/soundEffects';
 
 export const TechChallengeQuiz: React.FC = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [stage, setStage] = useState<'quiz' | 'reward' | 'coupon'>('quiz');
+  const [stage, setStage] = useState<'survey' | 'reward' | 'coupon'>('survey');
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [selectedStore, setSelectedStore] = useState<string>('');
+  const [feedbackText, setFeedbackText] = useState<string | null>(null);
+  const [selectedStore, setSelectedStore] = useState<string>('Loja Maceió (Rua do Uruguai)');
   const [isCopied, setIsCopied] = useState(false);
-  const [score, setScore] = useState(0);
+  const [isSoundMuted, setIsSoundMuted] = useState(false);
+  const [ratingsCount, setRatingsCount] = useState<number[]>([]);
 
-  const currentQ = QUIZ_QUESTIONS[currentQuestionIndex] || QUIZ_QUESTIONS[0];
-  const totalQuestions = QUIZ_QUESTIONS.length;
+  const currentQ = EVALUATION_QUESTIONS[currentQuestionIndex] || EVALUATION_QUESTIONS[0];
+  const totalQuestions = EVALUATION_QUESTIONS.length;
   const progressPercent = Math.round(((currentQuestionIndex + 1) / totalQuestions) * 100);
 
+  const handleToggleSound = () => {
+    const newMuteState = soundEffects.toggleMute();
+    setIsSoundMuted(newMuteState);
+    if (!newMuteState) {
+      soundEffects.playSelect();
+    }
+  };
+
+  const getOptionIcon = (iconName?: string) => {
+    switch (iconName) {
+      case 'Zap':
+        return <Zap className="w-5 h-5 text-amber-400 shrink-0" />;
+      case 'CheckCircle':
+        return <CheckCircle2 className="w-5 h-5 text-[#00E676] shrink-0" />;
+      case 'ShieldCheck':
+        return <ShieldCheck className="w-5 h-5 text-[#00E676] shrink-0" />;
+      case 'Award':
+        return <Award className="w-5 h-5 text-amber-400 shrink-0" />;
+      case 'Tag':
+        return <Tag className="w-5 h-5 text-[#00E676] shrink-0" />;
+      case 'CreditCard':
+        return <CreditCard className="w-5 h-5 text-blue-400 shrink-0" />;
+      case 'Heart':
+        return <Heart className="w-5 h-5 text-pink-500 fill-pink-500 shrink-0" />;
+      case 'Users':
+        return <Users className="w-5 h-5 text-purple-400 shrink-0" />;
+      case 'ThumbsUp':
+        return <ThumbsUp className="w-5 h-5 text-emerald-400 shrink-0" />;
+      default:
+        return <Star className="w-5 h-5 text-amber-400 fill-amber-400 shrink-0" />;
+    }
+  };
+
   const handleSelectOption = (index: number) => {
-    if (selectedOption !== null && isAnswerCorrect === true) return;
+    if (selectedOption !== null) return;
 
     setSelectedOption(index);
     const option = currentQ.options[index];
 
-    if (option.isCorrect) {
-      setIsAnswerCorrect(true);
-      setErrorMessage(null);
-      setScore((prev) => prev + 1);
+    // Play lively animated sound effects
+    soundEffects.playStar(option.stars ? option.stars - 1 : index);
+    setFeedbackText(option.feedback || 'Excelente! Obrigado pela avaliação.');
+    setRatingsCount((prev) => [...prev, option.stars || 5]);
 
-      // Advance after a brief delay for user feedback
-      setTimeout(() => {
-        if (currentQuestionIndex + 1 >= totalQuestions) {
-          setStage('reward');
-        } else {
-          setCurrentQuestionIndex((prev) => prev + 1);
-          setSelectedOption(null);
-          setIsAnswerCorrect(null);
-        }
-      }, 900);
-    } else {
-      setIsAnswerCorrect(false);
-      setErrorMessage('Ops! Resposta incorreta. Tente novamente para garantir seu bombom e desconto!');
-    }
+    // Advance to next question or reward stage
+    setTimeout(() => {
+      if (currentQuestionIndex + 1 >= totalQuestions) {
+        soundEffects.playCelebrationFanfare();
+        setStage('reward');
+      } else {
+        soundEffects.playStepSuccess();
+        setCurrentQuestionIndex((prev) => prev + 1);
+        setSelectedOption(null);
+        setFeedbackText(null);
+      }
+    }, 1100);
   };
 
   const handleUnlockCoupon = (storeName?: string, reviewUrl?: string) => {
@@ -48,34 +102,38 @@ export const TechChallengeQuiz: React.FC = () => {
       setSelectedStore(storeName);
     }
     const targetUrl = reviewUrl || STORE_INFO.googleReviewUrl;
-    
-    // Open Google Review in new tab to validate the bombom
+
+    // Play exciting reward unlocking sound effect
+    soundEffects.playRewardUnlock();
+
+    // Open Google Review in new tab
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
 
-    // Transition to coupon release stage
+    // Transition to validated coupon stage
     setTimeout(() => {
       setStage('coupon');
-    }, 1000);
+    }, 1200);
   };
 
   const handleCopyCoupon = () => {
-    navigator.clipboard.writeText('NOVACITY-TECH2026');
+    soundEffects.playCopySnap();
+    navigator.clipboard.writeText('NOVACITY-BOMBOM');
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2500);
   };
 
   const handleReset = () => {
-    setStage('quiz');
+    soundEffects.playSelect();
+    setStage('survey');
     setCurrentQuestionIndex(0);
     setSelectedOption(null);
-    setIsAnswerCorrect(null);
-    setErrorMessage(null);
-    setSelectedStore('');
-    setScore(0);
+    setFeedbackText(null);
+    setSelectedStore('Loja Maceió (Rua do Uruguai)');
+    setRatingsCount([]);
   };
 
   const whatsappQuizUrl = `https://wa.me/${STORE_INFO.phoneRaw}?text=${encodeURIComponent(
-    `Olá! Concluí o Desafio Tech no site da Nova City MCZ (${selectedStore ? `Unidade ${selectedStore}` : 'Loja'}) com o cupom NOVACITY-TECH2026 e quero resgatar meu bombom grátis e meus 20% OFF!`
+    `Olá Nova City MCZ! Concluí a avaliação no site com nota 5 Estrelas no Google (${selectedStore}) e gerei o cupom NOVACITY-BOMBOM para retirar meu Bombom Grátis 🍫 + 20% de Desconto no balcão!`
   )}`;
 
   return (
@@ -84,33 +142,61 @@ export const TechChallengeQuiz: React.FC = () => {
         
         {/* Glow accent */}
         <div className="absolute -top-20 -right-20 w-72 h-72 bg-[#00E676]/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-[#00E676]/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        {/* Top Badge */}
-        <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#00E676] text-black font-extrabold text-xs uppercase tracking-wider mb-4 shadow-[0_0_15px_rgba(0,230,118,0.4)]">
-          <Gamepad2 className="w-4 h-4 text-black" />
-          <span>🎮 JOGUE & GANHE</span>
+        {/* Top Bar with Badge and Sound Effect Toggle */}
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-500 to-[#00E676] text-black font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(255,193,7,0.4)]">
+            <span className="text-sm">⭐</span>
+            <span>AVALIE & GANHE • SISTEMA DE AVALIAÇÃO</span>
+            <span className="text-sm">🍫</span>
+          </div>
+
+          {/* Sound Controls Button */}
+          <button
+            type="button"
+            onClick={handleToggleSound}
+            className={`px-3 py-1.5 rounded-full border text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              isSoundMuted
+                ? 'bg-zinc-800/80 border-zinc-700 text-zinc-400 hover:text-zinc-200'
+                : 'bg-emerald-950/60 border-[#00E676]/40 text-[#00E676] shadow-[0_0_10px_rgba(0,230,118,0.2)]'
+            }`}
+            title={isSoundMuted ? 'Ativar Sons Animados' : 'Desativar Sons Animados'}
+          >
+            {isSoundMuted ? (
+              <>
+                <VolumeX className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Sem Som</span>
+              </>
+            ) : (
+              <>
+                <Volume2 className="w-3.5 h-3.5 animate-pulse" />
+                <span className="hidden sm:inline">Sons Ativados</span>
+              </>
+            )}
+          </button>
         </div>
 
-        {/* Title & Description */}
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3 font-['Outfit',sans-serif]">
-          O Desafio Tech da Nova City
+        {/* Main Section Headline */}
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2 font-['Outfit',sans-serif]">
+          Sistema de Avaliação Nova City MCZ
         </h2>
+        
         <p className="text-zinc-300 text-sm sm:text-base max-w-2xl mx-auto mb-8 leading-relaxed">
-          Teste seus conhecimentos sobre celulares, ganhe um <strong className="text-[#00E676]">bombom grátis</strong> na loja e desbloqueie um super desconto para o seu aparelho!
+          Responda a <strong className="text-white">4 perguntas rápidas</strong> sobre sua experiência, avalie a loja no Google no final e retire seu <strong className="text-[#00E676]">Bombom Grátis 🍫</strong> + <strong>20% OFF</strong> no balcão!
         </p>
 
         {/* ========================================================================= */}
-        {/* ETAPA 1: O QUIZ */}
+        {/* ETAPA 1: AS PERGUNTAS DA AVALIAÇÃO COM SONS */}
         {/* ========================================================================= */}
-        {stage === 'quiz' && (
-          <div id="quiz-box" className="bg-[#1e1e1e] border border-zinc-800 rounded-2xl p-6 sm:p-8 text-left shadow-2xl relative">
+        {stage === 'survey' && (
+          <div id="survey-box" className="bg-[#1e1e1e] border border-zinc-800 rounded-3xl p-6 sm:p-8 text-left shadow-2xl relative animate-fade-in">
             
-            {/* Progress Bar & Counter */}
-            <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
-              <div id="question-progress" className="text-xs font-black uppercase text-[#00E676] tracking-wider flex items-center gap-1.5">
+            {/* Progress Header */}
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <div className="text-xs font-black uppercase text-[#00E676] tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#00E676]" />
-                <span>Pergunta {currentQuestionIndex + 1} de {totalQuestions}</span>
+                <span>Etapa {currentQuestionIndex + 1} de {totalQuestions} • {currentQ.category}</span>
               </div>
               <span className="text-xs text-zinc-400 font-mono">
                 {progressPercent}% Concluído
@@ -118,138 +204,154 @@ export const TechChallengeQuiz: React.FC = () => {
             </div>
 
             {/* Visual Progress Bar */}
-            <div className="w-full bg-zinc-800 h-2 rounded-full mb-6 overflow-hidden">
+            <div className="w-full bg-zinc-800 h-2.5 rounded-full mb-6 overflow-hidden p-0.5 border border-zinc-700/50">
               <div
-                className="bg-gradient-to-r from-[#00E676] to-[#00C853] h-full transition-all duration-300 rounded-full"
+                className="bg-gradient-to-r from-amber-400 via-[#00E676] to-[#00C853] h-full transition-all duration-500 rounded-full shadow-[0_0_12px_rgba(0,230,118,0.5)]"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
 
             {/* Question Text */}
-            <h3 id="question-text" className="text-lg sm:text-xl font-bold text-white mb-2 leading-snug">
+            <h3 className="text-lg sm:text-xl md:text-2xl font-black text-white mb-1.5 leading-snug">
               {currentQ.question}
             </h3>
-            <p className="text-xs text-zinc-400 mb-6 italic">
-              {currentQ.tip}
+            <p className="text-xs sm:text-sm text-zinc-400 mb-6">
+              {currentQ.subtitle}
             </p>
 
-            {/* Options Grid */}
-            <div className="flex flex-col gap-3">
+            {/* Options List */}
+            <div className="flex flex-col gap-3.5">
               {currentQ.options.map((option, idx) => {
                 const isSelected = selectedOption === idx;
-                let btnStyle = 'bg-[#2a2a2a] text-zinc-200 border-zinc-700 hover:border-[#00E676] hover:bg-[#333333] hover:text-white';
                 
-                if (isSelected) {
-                  if (option.isCorrect) {
-                    btnStyle = 'bg-[#00E676] text-black font-extrabold border-[#00E676] shadow-[0_0_15px_rgba(0,230,118,0.5)]';
-                  } else {
-                    btnStyle = 'bg-red-600/90 text-white font-bold border-red-500';
-                  }
-                }
-
                 return (
                   <button
                     key={idx}
                     type="button"
                     onClick={() => handleSelectOption(idx)}
-                    className={`w-full p-4 rounded-xl border text-left text-sm sm:text-base transition-all duration-150 flex items-center justify-between cursor-pointer ${btnStyle}`}
+                    disabled={selectedOption !== null}
+                    className={`w-full p-4 sm:p-5 rounded-2xl border text-left transition-all duration-200 flex items-center justify-between gap-4 cursor-pointer group ${
+                      isSelected
+                        ? 'bg-gradient-to-r from-[#00E676]/20 to-amber-500/20 border-[#00E676] text-white shadow-[0_0_25px_rgba(0,230,118,0.35)] scale-[1.01]'
+                        : 'bg-[#242424] border-zinc-700/80 text-zinc-200 hover:border-amber-400 hover:bg-[#2c2c2c] hover:text-white hover:scale-[1.008]'
+                    }`}
                   >
-                    <span>{option.text}</span>
-                    {isSelected && option.isCorrect && (
-                      <CheckCircle2 className="w-5 h-5 text-black shrink-0 ml-2" />
-                    )}
-                    {isSelected && !option.isCorrect && (
-                      <XCircle className="w-5 h-5 text-white shrink-0 ml-2" />
-                    )}
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-10 h-10 rounded-xl bg-black/50 border border-zinc-700 flex items-center justify-center shrink-0 group-hover:border-amber-400 transition-colors">
+                        {getOptionIcon(option.icon)}
+                      </div>
+                      <div>
+                        <p className="text-sm sm:text-base font-bold text-white group-hover:text-[#00E676] transition-colors leading-snug">
+                          {option.text}
+                        </p>
+                        {option.badge && (
+                          <span className="inline-block mt-1 text-[10px] font-black uppercase tracking-wider text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                            {option.badge}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="shrink-0 flex items-center">
+                      <div className={`w-7 h-7 rounded-full border flex items-center justify-center transition-all ${
+                        isSelected
+                          ? 'bg-[#00E676] border-[#00E676] text-black'
+                          : 'border-zinc-600 group-hover:border-amber-400 text-transparent'
+                      }`}>
+                        <Check className="w-4 h-4 stroke-[3]" />
+                      </div>
+                    </div>
                   </button>
                 );
               })}
             </div>
 
-            {/* Feedback Message */}
-            {errorMessage && (
-              <div className="mt-4 p-3 rounded-xl bg-red-950/60 border border-red-700/60 text-red-200 text-xs sm:text-sm flex items-center gap-2 animate-shake">
-                <XCircle className="w-4 h-4 text-red-400 shrink-0" />
-                <span>{errorMessage}</span>
+            {/* Live Instant Feedback Box upon selection */}
+            {feedbackText && (
+              <div className="mt-5 p-4 bg-[#00E676]/15 border border-[#00E676] rounded-2xl flex items-center gap-3 animate-fade-in text-[#00E676]">
+                <Sparkles className="w-5 h-5 shrink-0 animate-spin" />
+                <span className="text-xs sm:text-sm font-bold">{feedbackText}</span>
               </div>
             )}
 
-            {isAnswerCorrect && currentQ.options[selectedOption!]?.explanation && (
-              <div className="mt-4 p-3.5 rounded-xl bg-[#00E676]/10 border border-[#00E676]/30 text-[#00E676] text-xs sm:text-sm flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-[#00E676] shrink-0" />
-                <span>{currentQ.options[selectedOption!]?.explanation}</span>
-              </div>
-            )}
+            <div className="mt-6 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
+              <span className="flex items-center gap-1.5">
+                <span>🔊 Toque em uma opção para ouvir o som e avançar</span>
+              </span>
+              <span className="font-semibold text-amber-400">Prêmio: 🍫 1 Bombom Grátis</span>
+            </div>
           </div>
         )}
 
         {/* ========================================================================= */}
-        {/* ETAPA 2: VALIDAÇÃO DO BOMBOM COM AVALIAÇÃO NO GOOGLE */}
+        {/* ETAPA 2: FIM DAS PERGUNTAS • BOTÃO PARA AVALIAR NO GOOGLE & GANHAR BOMBOM */}
         {/* ========================================================================= */}
         {stage === 'reward' && (
-          <div id="reward-box" className="bg-[#1e1e1e] border-2 border-[#00E676]/60 rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_35px_rgba(0,230,118,0.2)] animate-fade-in relative overflow-hidden">
+          <div id="reward-box" className="bg-[#1e1e1e] border-2 border-[#00E676] rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_40px_rgba(0,230,118,0.25)] animate-fade-in relative overflow-hidden">
             
-            <div className="w-20 h-20 bg-[#00E676]/15 border-2 border-[#00E676] rounded-full flex items-center justify-center text-[#00E676] mx-auto mb-4 shadow-[0_0_20px_rgba(0,230,118,0.4)] animate-bounce">
-              <span className="text-3xl">🍫</span>
+            {/* Animated Floating Chocolate Icon */}
+            <div className="w-24 h-24 bg-gradient-to-tr from-amber-500/20 via-[#00E676]/20 to-amber-500/20 border-2 border-[#00E676] rounded-full flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(0,230,118,0.5)] animate-bounce">
+              <span className="text-4xl sm:text-5xl select-none">🍫</span>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-2">
+            {/* Victory Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-black uppercase tracking-wider mb-3">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Etapa Final • Validação do Prêmio</span>
+              <span>Perguntas Concluídas com Sucesso!</span>
             </div>
 
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 font-['Outfit',sans-serif]">
-              🎉 Você Concluiu as Perguntas!
+              Você Ganhou um Bombom Grátis!
             </h3>
             
-            <p className="text-zinc-300 text-sm sm:text-base max-w-lg mx-auto mb-4">
-              Você acertou o desafio e garantiu o seu brinde exclusivo da Nova City MCZ!
+            <p className="text-zinc-300 text-sm sm:text-base max-w-lg mx-auto mb-6">
+              Obrigado pelas suas respostas! Agora falta apenas o último passo para validar a sua retirada:
             </p>
 
             {/* Prize Highlight Box */}
-            <div className="bg-gradient-to-r from-amber-500/10 via-[#00E676]/15 to-amber-500/10 border-2 border-dashed border-[#00E676] p-4 sm:p-6 rounded-2xl my-5 max-w-lg mx-auto shadow-[0_0_25px_rgba(0,230,118,0.2)]">
-              <div className="flex items-center justify-center gap-2 text-[#00E676] text-lg sm:text-xl font-black">
+            <div className="bg-gradient-to-r from-amber-500/15 via-[#00E676]/20 to-amber-500/15 border-2 border-dashed border-[#00E676] p-5 rounded-2xl my-5 max-w-lg mx-auto shadow-[0_0_30px_rgba(0,230,118,0.25)]">
+              <div className="flex items-center justify-center gap-2 text-[#00E676] text-xl sm:text-2xl font-black">
                 <Gift className="w-6 h-6 text-[#00E676] shrink-0" />
-                <span>🎁 1 Bombom Grátis no Balcão</span>
+                <span>🎁 1 BOMBOM GRÁTIS NO BALCÃO</span>
               </div>
-              <p className="text-xs sm:text-sm text-zinc-300 font-semibold mt-1">
-                + 20% de Desconto em Películas & Acessórios na Loja
+              <p className="text-xs sm:text-sm text-amber-300 font-bold mt-1">
+                + 20% DE DESCONTO EM PELÍCULAS 9D E ACESSÓRIOS
               </p>
             </div>
 
-            {/* Validation Explanation */}
-            <div className="bg-black/60 border border-zinc-800 rounded-2xl p-4 sm:p-5 max-w-lg mx-auto my-6 text-left">
+            {/* Instructions box */}
+            <div className="bg-black/70 border border-zinc-800 rounded-2xl p-4 sm:p-5 max-w-lg mx-auto my-6 text-left">
               <div className="flex items-center gap-2 text-amber-400 font-black text-xs sm:text-sm uppercase tracking-wide mb-1.5">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <Star className="w-4 h-4 text-amber-400 fill-amber-400 shrink-0" />
                 <span>Como validar e retirar seu bombom:</span>
               </div>
               <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                Clique no botão abaixo para <strong>avaliar com 5 estrelas no Google</strong>. Isso validará o seu bombom e liberará o código do cupom para apresentar no balcão da loja!
+                Clique no botão destacado abaixo para <strong>publicar sua avaliação com 5 estrelas no Google</strong>. Isso validará o seu bombom e liberará o código do cupom na hora!
               </p>
             </div>
 
-            {/* PRIMARY GOOGLE REVIEW VALIDATION BUTTON */}
+            {/* PRIMARY GOOGLE REVIEW BUTTON REQUESTED BY USER */}
             <div className="max-w-md mx-auto flex flex-col gap-3">
               <button
                 type="button"
-                id="btn-validate-bombom-google"
+                id="btn-evaluate-google-bombom"
                 onClick={() => handleUnlockCoupon('Loja Maceió (Rua do Uruguai)', STORE_INFO.googleReviewUrl)}
-                className="w-full bg-gradient-to-r from-amber-400 via-[#00E676] to-emerald-400 hover:from-amber-300 hover:to-emerald-300 text-black font-black py-4 px-6 rounded-2xl text-sm sm:text-base uppercase tracking-wider transition-all transform hover:scale-[1.03] active:scale-[0.98] shadow-[0_0_30px_rgba(0,230,118,0.5)] border-2 border-white/20 flex items-center justify-center gap-2.5 cursor-pointer"
+                className="w-full bg-gradient-to-r from-amber-400 via-[#00E676] to-emerald-400 hover:from-amber-300 hover:to-emerald-300 text-black font-black py-4 px-6 rounded-2xl text-sm sm:text-base uppercase tracking-wider transition-all transform hover:scale-[1.03] active:scale-[0.98] shadow-[0_0_35px_rgba(0,230,118,0.6)] border-2 border-white/30 flex items-center justify-center gap-2.5 cursor-pointer"
               >
-                <span className="text-lg">⭐</span>
-                <span>AVALIAR NO GOOGLE & VALIDAR BOMBOM</span>
-                <Sparkles className="w-4 h-4 fill-black" />
+                <span className="text-xl">⭐</span>
+                <span>AVALIAR NO GOOGLE & GANHAR BOMBOM</span>
+                <span className="text-xl">🍫</span>
               </button>
 
-              <span className="text-[11px] text-zinc-400">
-                (Abre o Google Reviews da Nova City e libera seu cupom na hora)
+              <span className="text-[11px] text-zinc-400 flex items-center justify-center gap-1">
+                <span>⚡ Abre o Google Reviews oficial da Nova City e libera seu cupom</span>
               </span>
             </div>
 
-            {/* Store Selection Alternative Options */}
+            {/* Alternative Unit Selection */}
             <div className="mt-8 pt-6 border-t border-zinc-800 max-w-lg mx-auto">
               <p className="text-xs text-zinc-400 mb-3">
-                Ou escolha diretamente por unidade para avaliar:
+                Ou escolha diretamente por unidade para avaliar no Google:
               </p>
               <div className="flex flex-col sm:flex-row gap-2.5">
                 <button
@@ -275,7 +377,7 @@ export const TechChallengeQuiz: React.FC = () => {
         )}
 
         {/* ========================================================================= */}
-        {/* ETAPA 3: CUPOM FINAL LIBERADO & VALIDADO */}
+        {/* ETAPA 3: CUPOM VALIDADO COM SUCESSO & LIBERADO */}
         {/* ========================================================================= */}
         {stage === 'coupon' && (
           <div id="coupon-box" className="bg-[#1e1e1e] border-2 border-[#00E676] rounded-3xl p-6 sm:p-10 text-center shadow-[0_0_40px_rgba(0,230,118,0.3)] animate-scale-up">
@@ -283,9 +385,9 @@ export const TechChallengeQuiz: React.FC = () => {
               <Sparkles className="w-8 h-8" />
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00E676]/15 border border-[#00E676]/40 text-[#00E676] text-xs font-black uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#00E676]/15 border border-[#00E676]/40 text-[#00E676] text-xs font-black uppercase tracking-wider mb-3">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Validação Concluída • Prêmio Liberado</span>
+              <span>Avaliação Concluída • Bombom Liberado!</span>
             </div>
 
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-2 font-['Outfit',sans-serif]">
@@ -305,7 +407,7 @@ export const TechChallengeQuiz: React.FC = () => {
             {/* Coupon Code Block with Copy Action */}
             <div className="max-w-md mx-auto my-5 bg-black border-2 border-[#00E676] rounded-2xl p-4 sm:p-5 flex items-center justify-between shadow-inner">
               <div className="font-mono text-xl sm:text-2xl font-black text-[#00E676] tracking-widest pl-2">
-                NOVACITY-TECH2026
+                NOVACITY-BOMBOM
               </div>
               <button
                 type="button"
@@ -315,7 +417,7 @@ export const TechChallengeQuiz: React.FC = () => {
               >
                 {isCopied ? (
                   <>
-                    <Check className="w-4 h-4 text-[#00E676] group-hover:text-black" />
+                    <Check className="w-4 h-4 text-[#00E676]" />
                     <span>Copiado!</span>
                   </>
                 ) : (
@@ -338,12 +440,13 @@ export const TechChallengeQuiz: React.FC = () => {
             </p>
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto justify-center">
               <a
                 href={whatsappQuizUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full sm:w-auto flex-1 bg-[#00C853] hover:bg-[#00E676] text-black font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,200,83,0.4)] transition-all flex items-center justify-center gap-2 hover:scale-105"
+                onClick={() => soundEffects.playSelect()}
+                className="w-full sm:w-auto flex-1 bg-[#00C853] hover:bg-[#00E676] text-black font-extrabold px-6 py-3.5 rounded-xl text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,200,83,0.4)] transition-all flex items-center justify-center gap-2 hover:scale-105 cursor-pointer"
               >
                 <MessageSquare className="w-4 h-4" />
                 <span>💬 Enviar no WhatsApp</span>
@@ -353,10 +456,10 @@ export const TechChallengeQuiz: React.FC = () => {
                 type="button"
                 onClick={handleReset}
                 className="w-full sm:w-auto px-4 py-3.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer border border-zinc-700"
-                title="Jogar novamente"
+                title="Avaliar novamente"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
-                <span>Jogar de Novo</span>
+                <span>Avaliar de Novo</span>
               </button>
             </div>
 

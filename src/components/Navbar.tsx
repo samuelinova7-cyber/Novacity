@@ -23,7 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({
     { id: 'servicos', label: 'Serviços' },
     { id: 'produtos', label: 'Acessórios' },
     { id: 'orcamento', label: 'Orçamento' },
-    { id: 'desafio-tech', label: '🎮 Quiz & Ganhe', highlight: true },
+    { id: 'desafio-tech', label: '⭐ Avalie & Ganhe 🍫', highlight: true },
     { id: 'localizacao', label: 'Como Chegar' },
     { id: 'depoimentos', label: 'Avaliações' },
     { id: 'instagram-reels', label: 'Instagram' },
